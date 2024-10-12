@@ -36,3 +36,5 @@ app.use('/order', OrderRouter)
 // app.listen(5000, ()=>{
 //     console.log('server is listening on port 5000')
 // })
+
+module.exports = app;
