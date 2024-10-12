@@ -47,9 +47,11 @@ const CreateProduct = async (req, res) => {
       price: req.body.price,
       discountedPrice: req.body.discountedPrice,
       category: req.body.category,
-      subCategory: req.body.subCategory,
+      subcategoryslug: req.body.subcategoryslug,
       sizes: JSON.parse(req.body.sizes),
-      imageLink: imageUrls,  // Save all Cloudinary URLs in MongoDB
+      imageLink: imageUrls,
+      rating: 0,
+      reviews: 0
     };
 
     // Create the product document
