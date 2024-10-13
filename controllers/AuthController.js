@@ -79,7 +79,7 @@ const Login = async (req, res) => {
             const token = jwt.sign({ id: Exist._id, email: Exist.email }, SecretKey, { expiresIn: '1d' }); // expires in 1 day
 
             // Set the token in cookies
-            res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 }); // 1 day in milliseconds
+            res.cookie('token', token, {sameSite: 'None', httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 }); // 1 day in milliseconds
 
             return res.status(200).json({ User: Exist, auth: true });
         } else {

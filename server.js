@@ -13,15 +13,26 @@ const app  = express()
 
 app.use(cookieParser());
 app.use(express.json())
+const allowedOrigins = [
+  'https://clothswebsite.vercel.app', // Frontend production URL
+  'http://localhost:3000',
+  'http://localhost:5173', // For local development, adjust as needed
+];
+
 app.use(
-    cors({
-      origin: function (origin, callback) {
-        return callback(null, true);
-      },
-      optionsSuccessStatus: 200,
-      credentials: true,
-    })
-  );
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    optionsSuccessStatus: 200,
+    credentials: true,
+  })
+);
+
 
 
 
@@ -32,9 +43,5 @@ app.use('/review', ReviewRouter)
 app.use('/cart', CartRouter)
 app.use('/order', OrderRouter)
 
-
-// app.listen(5000, ()=>{
-//     console.log('server is listening on port 5000')
-// })
 
 module.exports = app;
