@@ -17,12 +17,33 @@ const createOrder = async (req, res) => {
         orderStatus,
       } = req.body;
   
+      if (!cartId) {
+        const newOrder = new order({
+          country: country,
+          address: address,
+          apartmentSuite: apartmentSuite,
+          city: city,
+          postalCode: postalCode,
+          phone: phone,
+          paymentMethod: paymentMethod,
+          OrderStatus: orderStatus,
+          totalItems: req.body.totalItems,
+          totalBill: req.body.totalBill,
+          discountedBill: req.body.discountedBill,
+          products: req.body.products,
+        });
+    
+        // Save the order
+        await newOrder.save();
+    
+        return res.status(200).send({ msg: "Order Placed" });
+      }
       // Find the cart by its ID
       const cartdata = await cart.findOne({ _id: String(cartId) });
       
       // If cart is not found, return the response and stop execution
       if (!cartdata) {
-        return res.status(404).json({ msg: "No cart Found" });
+        return res.status(404).send({ msg: "No Cart Found" });
       }
   
       // Create a new order with the cart data
