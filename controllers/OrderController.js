@@ -36,7 +36,7 @@ const createOrder = async (req, res) => {
         // Save the order
         await newOrder.save();
     
-        return res.status(200).send({ msg: "Order Placed" });
+        return res.status(200).send({ msg: "Order Placed",data: newOrder });
       }
       // Find the cart by its ID
       const cartdata = await cart.findOne({ _id: String(cartId) });
@@ -70,7 +70,7 @@ const createOrder = async (req, res) => {
       await cart.findByIdAndDelete(cartId);
   
       // Return success response
-      return res.status(200).send({ msg: "Order Placed" });
+      return res.status(200).send({ msg: "Order Placed", data:newOrder });
   
     } catch (e) {
       // Return error response in case of failure
