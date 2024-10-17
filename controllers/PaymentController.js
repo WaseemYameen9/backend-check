@@ -9,7 +9,7 @@ const ProcessPayment = async (req,res) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
       currency: currency,
-      payment_method_types: ["card"],
+      payment_method_types: ["card","apple_pay"],
     });
 
     res.send({
