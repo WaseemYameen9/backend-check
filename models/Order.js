@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 
 const schema = mongoose.Schema({
     userId: { type: mongoose.Types.ObjectId, ref: 'User'},
+    firstName: String,
+    lastName: String,
+    email: String,
     country: String,
     address: String,
     apartmentSuite: String,

@@ -1,39 +1,39 @@
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const product = require("../models/product");
-const cloudinary = require('cloudinary').v2;
 
-cloudinary.config({
-  cloud_name: 'ddjq1wqv5',
-  api_key: '157883973243316',
-  api_secret: '3YCn2hJJMTlvmb7_GpdiPAe9UjA',
+// Configure the AWS S3 client
+const s3Client = new S3Client({
+  region: 'eu-north-1', // Replace with your region
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+  },
 });
-
-
 
 const CreateProduct = async (req, res) => {
   try {
     const imageUrls = [];
 
-    // Upload each image to Cloudinary
+    // Upload each image to S3
     const uploadPromises = req.files.map(async (file) => {
       try {
-        const result = await new Promise((resolve, reject) => {
-          cloudinary.uploader.upload_stream(
-            { folder: 'products' },
-            (error, result) => {
-              if (error) {
-                reject(error); // Reject if there's an error
-              } else {
-                resolve(result.secure_url); // Resolve with the URL if successful
-              }
-            }
-          ).end(file.buffer); // Upload the image buffer to Cloudinary
-        });
+        const params = {
+          Bucket: 'theuniquesunnah', // Replace with your S3 bucket name
+          Key: `products/${Date.now()}-${file.originalname}`, // Unique file name for S3
+          Body: file.buffer, // The file buffer
+          ContentType: file.mimetype, // Set the correct content type
+        };
 
-        // Push the result (image URL) to imageUrls
-        imageUrls.push(result);
-      } catch (uploadError) {
-        console.error('Cloudinary upload error:', uploadError);
-        throw new Error('Image upload failed'); // Throw an error if upload fails
+        // Upload the file using PutObjectCommand
+        const command = new PutObjectCommand(params);
+        await s3Client.send(command);
+
+        // Construct the image URL and push to the array
+        const imageUrl = `https://${params.Bucket}.s3.amazonaws.com/${params.Key}`;
+        imageUrls.push(imageUrl);
+      } catch (error) {
+        console.error('S3 upload error:', error);
+        throw new Error('Image upload failed');
       }
     });
 
@@ -49,23 +49,88 @@ const CreateProduct = async (req, res) => {
       category: req.body.category,
       subcategoryslug: req.body.subcategoryslug,
       sizes: JSON.parse(req.body.sizes),
-      imageLink: imageUrls,
+      imageLink: imageUrls, // Store S3 URLs in MongoDB
       rating: 0,
-      reviews: 0
+      reviews: 0,
     };
 
-    // Create the product document
-    const newProduct = await product.create(productData);  // Ensure `product` is the model
+    const newProduct = await product.create(productData);
 
-    console.log(newProduct);
-
-    // Send the saved product back to the client
-    res.status(200).json(newProduct);  
+    res.status(200).json(newProduct);
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: e.message });  // Send error response if anything fails
+    res.status(500).json({ error: e.message });
   }
 };
+
+
+// const cloudinary = require('cloudinary').v2;
+
+// cloudinary.config({
+//   cloud_name: 'ddjq1wqv5',
+//   api_key: '157883973243316',
+//   api_secret: '3YCn2hJJMTlvmb7_GpdiPAe9UjA',
+// });
+
+
+
+// const CreateProduct = async (req, res) => {
+//   try {
+//     const imageUrls = [];
+
+//     // Upload each image to Cloudinary
+//     const uploadPromises = req.files.map(async (file) => {
+//       try {
+//         const result = await new Promise((resolve, reject) => {
+//           cloudinary.uploader.upload_stream(
+//             { folder: 'products' },
+//             (error, result) => {
+//               if (error) {
+//                 reject(error); // Reject if there's an error
+//               } else {
+//                 resolve(result.secure_url); // Resolve with the URL if successful
+//               }
+//             }
+//           ).end(file.buffer); // Upload the image buffer to Cloudinary
+//         });
+
+//         // Push the result (image URL) to imageUrls
+//         imageUrls.push(result);
+//       } catch (uploadError) {
+//         console.error('Cloudinary upload error:', uploadError);
+//         throw new Error('Image upload failed'); // Throw an error if upload fails
+//       }
+//     });
+
+//     // Wait for all uploads to complete
+//     await Promise.all(uploadPromises);
+
+//     // Now save the product to MongoDB
+//     const productData = {
+//       title: req.body.title,
+//       description: req.body.description,
+//       price: req.body.price,
+//       discountedPrice: req.body.discountedPrice,
+//       category: req.body.category,
+//       subcategoryslug: req.body.subcategoryslug,
+//       sizes: JSON.parse(req.body.sizes),
+//       imageLink: imageUrls,
+//       rating: 0,
+//       reviews: 0
+//     };
+
+//     // Create the product document
+//     const newProduct = await product.create(productData);  // Ensure `product` is the model
+
+//     console.log(newProduct);
+
+//     // Send the saved product back to the client
+//     res.status(200).json(newProduct);  
+//   } catch (e) {
+//     console.error(e);
+//     res.status(500).json({ error: e.message });  // Send error response if anything fails
+//   }
+// };
 
 const UpdateProduct = async (req, res) => {
   try {

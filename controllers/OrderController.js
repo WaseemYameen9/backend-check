@@ -7,6 +7,9 @@ const createOrder = async (req, res) => {
         console.log(req.body)
       const {
         cartId,
+        firstName,
+        lastName,
+        email,
         country,
         address,
         apartmentSuite,
@@ -19,6 +22,9 @@ const createOrder = async (req, res) => {
   
       if (!cartId) {
         const newOrder = new order({
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
           country: country,
           address: address,
           apartmentSuite: apartmentSuite,
@@ -30,7 +36,11 @@ const createOrder = async (req, res) => {
           totalItems: req.body.totalItems,
           totalBill: req.body.totalBill,
           discountedBill: req.body.discountedBill,
-          products: req.body.products,
+          products: req.body.products.map(product => ({
+            productId: product._id,  // Rename _id to productId
+            qty: product.qty,
+            size: product.size,
+          })),
         });
     
         // Save the order
@@ -49,6 +59,9 @@ const createOrder = async (req, res) => {
       // Create a new order with the cart data
       const newOrder = new order({
         userId: cartdata.userId,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
         country: country,
         address: address,
         apartmentSuite: apartmentSuite,
@@ -88,6 +101,16 @@ const getOrderofCst = async (req, res) => {
   }
 };
 
+const getOrderbyId = async (req, res) => {
+  const { orderId } = req.params;
+  try {
+    const orders = await order.find({ _id: orderId }).populate('userId').populate('products.productId');
+    res.status(200).json({ Orders: orders });
+  } catch (e) {
+    res.status(500).json({ Error: e });
+  }
+};
+
 const getAllOrders = async (req, res) => {
   try {
     const orders = await order.find({});
@@ -101,4 +124,5 @@ module.exports = {
   createOrder,
   getOrderofCst,
   getAllOrders,
+  getOrderbyId
 };
