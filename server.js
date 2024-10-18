@@ -17,7 +17,8 @@ app.use(express.json())
 const allowedOrigins = [
   'https://clothswebsite.vercel.app',
   'https://www.theuniquesunnah.com', // Frontend production URL
-  'https://www.admin.theuniquesunnah.com', // Frontend production URL
+  'https://www.admin.theuniquesunnah.com',
+  'https://admin.theuniquesunnah.com', // Frontend production URL
   'http://localhost:3000',
   'http://localhost:5173', // For local development, adjust as needed
 ];
