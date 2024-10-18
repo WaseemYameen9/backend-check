@@ -4,7 +4,9 @@ const authMiddleware = require('../middleware/Auth')
 
 const router = express.Router()
 
-router.post('/create-sub-category',authMiddleware,CategoryController.CreateSubCategory)
+router.post('/create-category',CategoryController.CreateSubCategory)
+router.post('/create-sub-category',CategoryController.CreateSubCategoryInCategory)
+router.post('/create-sub-categoryy',CategoryController.CreateSubCategoryInCategory)
 router.get('/get',CategoryController.getCategoriesAndSubCategories)
 router.get('/get-admin',CategoryController.getCategoriesAndSubCategories)
 

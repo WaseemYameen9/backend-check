@@ -17,7 +17,7 @@ app.use(express.json())
 const allowedOrigins = [
   'https://clothswebsite.vercel.app',
   'https://www.theuniquesunnah.com', // Frontend production URL
-  'https://admin.theuniquesunnah.com', // Frontend production URL
+  'https://admin.theuniquesunnah.com',
   'http://localhost:3000',
   'http://localhost:5173', // For local development, adjust as needed
 ];
@@ -47,6 +47,5 @@ app.use('/review', ReviewRouter)
 app.use('/cart', CartRouter)
 app.use('/order', OrderRouter)
 app.use('/payment', Payment)
-
 
 module.exports = app;
