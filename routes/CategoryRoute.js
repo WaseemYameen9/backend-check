@@ -6,6 +6,7 @@ const router = express.Router()
 
 router.post('/create-sub-category',authMiddleware,CategoryController.CreateSubCategory)
 router.get('/get',CategoryController.getCategoriesAndSubCategories)
+router.get('/get-admin',CategoryController.getCategoriesAndSubCategories)
 
 
 module.exports = router;
