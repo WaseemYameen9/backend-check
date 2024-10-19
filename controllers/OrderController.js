@@ -1,5 +1,6 @@
 const order = require("../models/Order");
 const cart = require("../models/Cart");
+
 const mongoose = require('mongoose')
 
 const createOrder = async (req, res) => {
@@ -113,16 +114,42 @@ const getOrderbyId = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await order.find({});
+    const orders = await order.find({}).sort({ createdAt: -1 }).populate('userId').populate('products.productId');;
     res.status(200).json({ Orders: orders });
   } catch (e) {
     res.status(500).json({ Error: e });
   }
 };
 
+const ChangeStatus = async (req, res) => {
+  const { status, _id } = req.body;
+  
+  try {
+    // Find the order by its ID and update the status
+    const updatedOrder = await order.findByIdAndUpdate(
+      _id, 
+      { OrderStatus: status }, 
+      { new: true } // Returns the updated document
+    );
+    
+    // If order is not found
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    
+    // Send the updated order as the response
+    res.status(200).json({ message: "Order status updated", order: updatedOrder });
+  } catch (e) {
+    // Handle any errors that occur during the update
+    res.status(500).json({ Error: e.message });
+  }
+};
+
+
 module.exports = {
   createOrder,
   getOrderofCst,
   getAllOrders,
-  getOrderbyId
+  getOrderbyId,
+  ChangeStatus
 };

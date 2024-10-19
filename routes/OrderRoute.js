@@ -4,6 +4,7 @@ const OrderController = require('../controllers/OrderController')
 const router = express.Router()
 
 router.post('/create', OrderController.createOrder)
+router.post('/changestatus', OrderController.ChangeStatus)
 router.get('/get', OrderController.getAllOrders)
 router.get('/get/:userId', OrderController.getOrderofCst)
 router.get('/getbyid/:orderId', OrderController.getOrderbyId)

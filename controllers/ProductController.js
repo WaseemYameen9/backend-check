@@ -1,27 +1,24 @@
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const product = require("../models/product");
 
-// Configure the AWS S3 client
 const s3Client = new S3Client({
-  region: 'eu-north-1', // Replace with your region
+  region: 'eu-north-1',
   credentials: {
-    accessKeyId:  process.env.MY_AWS_ACCESS_KEY,
-    secretAccessKey:  process.env.MY_AWS_SECRET_KEY,
+    accessKeyId: process.env.MY_AWS_ACCESS_KEY,
+    secretAccessKey: process.env.MY_AWS_SECRET_KEY,
   },
 });
 
 const CreateProduct = async (req, res) => {
   try {
     const imageUrls = [];
-
-    // Upload each image to S3
     const uploadPromises = req.files.map(async (file) => {
       try {
         const params = {
-          Bucket: 'theuniquesunnah', // Replace with your S3 bucket name
-          Key: `products/${Date.now()}-${file.originalname}`, // Unique file name for S3
-          Body: file.buffer, // The file buffer
-          ContentType: file.mimetype, // Set the correct content type
+          Bucket: 'theuniquesunnah',
+          Key: `products/${Date.now()}-${file.originalname}`,
+          Body: file.buffer,
+          ContentType: file.mimetype,
         };
 
         // Upload the file using PutObjectCommand

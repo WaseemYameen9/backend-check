@@ -6,6 +6,7 @@ const CategoryRouter = require('./routes/CategoryRoute')
 const ReviewRouter = require('./routes/ReviewsRoute')
 const CartRouter = require('./routes/CartRoute')
 const OrderRouter = require('./routes/OrderRoute')
+const DetailsRouter = require('./routes/DetailsRoute')
 const Payment = require('./routes/Payment')
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
@@ -16,10 +17,10 @@ app.use(cookieParser());
 app.use(express.json())
 const allowedOrigins = [
   'https://clothswebsite.vercel.app',
-  'https://www.theuniquesunnah.com', // Frontend production URL
+  'https://www.theuniquesunnah.com',
   'https://admin.theuniquesunnah.com',
   'http://localhost:3000',
-  'http://localhost:5173', // For local development, adjust as needed
+  'http://localhost:5173',
 ];
 
 app.use(
@@ -47,5 +48,7 @@ app.use('/review', ReviewRouter)
 app.use('/cart', CartRouter)
 app.use('/order', OrderRouter)
 app.use('/payment', Payment)
+app.use('/details', DetailsRouter)
+
 
 module.exports = app;
