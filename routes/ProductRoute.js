@@ -13,7 +13,7 @@ router.get('/get/:category/:subcategory', ProductController.getProductsBySubCate
 router.get('/get/:category', ProductController.getProductsByCategory)
 router.get('/get/:id', ProductController.GetProduct)
 router.put('/update/:id', ProductController.UpdateProduct)
-router.delete('/delete/:id', ProductController.DeleteProduct)
+router.delete('/delete', ProductController.DeleteProduct)
 
 
 module.exports = router;

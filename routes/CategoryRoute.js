@@ -7,6 +7,7 @@ const router = express.Router()
 router.post('/create-category',CategoryController.CreateSubCategory)
 router.post('/create-sub-category',CategoryController.CreateSubCategoryInCategory)
 router.post('/create-sub-categoryy',CategoryController.CreateSubCategoryInCategory)
+router.delete('/delete-sub-category',CategoryController.DeleteSubCategory)
 router.get('/get',CategoryController.getCategoriesAndSubCategories)
 router.get('/get-admin',CategoryController.getCategoriesAndSubCategories)
 

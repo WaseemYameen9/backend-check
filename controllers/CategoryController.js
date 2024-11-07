@@ -1,4 +1,5 @@
 const Category = require('../models/Category');
+const Product = require('../models/product')
 
 
 const CreateSubCategory = async (req, res) => {
@@ -43,10 +44,32 @@ const getCategoriesAndSubCategories = async (req, res) => {
 };
 
 
+const DeleteSubCategory = async (req, res) => {
+    const { categorySlug, subCategorySlug } = req.body;
+
+    try {
+        const result = await Category.findOneAndUpdate(
+            { categorySlug },
+            { $pull: { subCategories: { slug: subCategorySlug } } },
+            { new: true }
+        );
+        await Product.deleteMany({ subcategoryslug: subCategorySlug });
+
+        if (!result) {
+            return res.status(404).json({ message: "Category or subcategory not found" });
+        }
+
+        res.status(200).json({ message: "Subcategory deleted successfully", updatedCategory: result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+};
+
 
 
 module.exports = {
     CreateSubCategory,
     getCategoriesAndSubCategories,
-    CreateSubCategoryInCategory
+    CreateSubCategoryInCategory,
+    DeleteSubCategory
 };
