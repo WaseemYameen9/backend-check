@@ -1,5 +1,4 @@
 const Stripe = require('stripe')
-require('dotenv').config();
 
 const stripe = Stripe(process.env.MY_STRIPE_KEY);
 
